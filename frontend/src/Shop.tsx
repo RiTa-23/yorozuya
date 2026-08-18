@@ -199,7 +199,7 @@ export function Shop() {
         <div className="bg-white p-1">
           <div className="flex items-stretch gap-3 border-2 border-[#10182c] bg-[#10182c] p-3">
             <div className="flex h-14 w-14 shrink-0 items-center justify-center border-2 border-[#8a5a2e] bg-gradient-to-b from-[#4a3220] to-[#2b1c12] text-2xl shadow-[inset_0_-4px_0_#8a5a2e]">
-              🧓
+              🧙‍♂️
             </div>
             <p className="flex-1 text-sm leading-relaxed">
               {log[0]}
