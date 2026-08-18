@@ -1,7 +1,7 @@
-import { Mock } from "./Mock";
+import { Shop } from "./Shop";
 
 function App() {
-  return <Mock />;
+  return <Shop />;
 }
 
 export default App;
