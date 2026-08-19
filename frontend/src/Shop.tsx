@@ -130,7 +130,7 @@ export function Shop() {
         </div>
       </div>
 
-      <div className="mx-auto mt-5 max-w-2xl space-y-4 px-4 sm:px-8">
+      <div className="mx-auto mt-5 max-w-4xl space-y-4 px-4 sm:px-8">
         {/* 所持金バッジ */}
         <div className="flex justify-end">
           <div className="relative flex items-center gap-1.5 border-2 border-[#ffd54a]/80 bg-[#150d07] px-3 py-1 text-sm shadow-[3px_3px_0_rgba(0,0,0,0.45)]">
@@ -175,7 +175,7 @@ export function Shop() {
                 {connected ? "商品がありません" : "お店に入れませんでした"}
               </p>
             ) : (
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
                 {items.map((item) => (
                   <ShelfSlot
                     key={item.id}
@@ -197,7 +197,7 @@ export function Shop() {
             {ownedEntries.length === 0 ? (
               <p className="text-xs text-[#c9b98f]">なにも持っていない</p>
             ) : (
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
                 {ownedEntries.map(({ owned, item }) => (
                   <ShelfSlot
                     key={owned.itemId}
