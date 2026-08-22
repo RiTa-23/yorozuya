@@ -1,7 +1,7 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import type { Item, OwnedItem } from "./api";
 import { FALLBACK_ICON, ITEM_ICONS } from "./itemIcons";
-import { useShop } from "./useShop";
+import { useShop, type TradeFeedback } from "./useShop";
 
 // 金貨アイコン。絵文字🪙は環境によって銀色に見えることがあるため、確実に金色になるようCSSで描く。
 function GoldCoin() {
@@ -59,6 +59,7 @@ function ShelfSlot({
   disabled,
   actionLabel,
   onAction,
+  feedback,
 }: {
   icon: string;
   name: string;
@@ -68,11 +69,30 @@ function ShelfSlot({
   disabled?: boolean;
   actionLabel: string;
   onAction: () => void;
+  feedback?: TradeFeedback | null;
 }) {
+  const gained = feedback?.kind === "sell";
   return (
     <div className="relative flex h-full flex-col border-2 border-[#ffd54a]/80 bg-[#150d07] p-2.5 text-center shadow-[3px_3px_0_rgba(0,0,0,0.45)]">
       <Rivets />
-      <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center border-2 border-[#ffd54a]/70 bg-gradient-to-b from-[#241a12] to-[#0d0904] text-3xl shadow-[inset_0_0_12px_rgba(0,0,0,0.7)]">
+      {feedback && (
+        <span
+          key={feedback.id}
+          className={`pointer-events-none absolute left-1/2 top-1 z-10 animate-float-up text-xs font-bold drop-shadow-[0_1px_0_rgba(0,0,0,0.8)] ${
+            gained ? "text-[#7cd67c]" : "text-[#ff8a5c]"
+          }`}
+        >
+          {gained ? `+${feedback.amount}G` : `-${feedback.amount}G`}
+        </span>
+      )}
+      <div
+        key={feedback?.id ?? "idle"}
+        className={`mx-auto mb-2 flex h-14 w-14 items-center justify-center border-2 bg-gradient-to-b from-[#241a12] to-[#0d0904] text-3xl shadow-[inset_0_0_12px_rgba(0,0,0,0.7)] ${
+          feedback
+            ? `animate-pop ${gained ? "border-[#7cd67c]" : "border-[#ff8a5c]"}`
+            : "border-[#ffd54a]/70"
+        }`}
+      >
         {icon}
       </div>
       <p className="text-xs tracking-wide text-[#ffe9b3]">{name}</p>
@@ -99,8 +119,17 @@ function ShelfSlot({
 type Mode = "buy" | "sell";
 
 export function Shop() {
-  const { items, player, log, loading, busy, connected, buy, sell } = useShop();
+  const { items, player, log, loading, busy, connected, buy, sell, feedback } = useShop();
   const [mode, setMode] = useState<Mode>("buy");
+
+  // 金額バッジは売買のたびに一瞬だけ弾ませて、増減にメリハリをつける
+  const [goldPulse, setGoldPulse] = useState(false);
+  useEffect(() => {
+    if (!feedback) return;
+    setGoldPulse(true);
+    const timer = window.setTimeout(() => setGoldPulse(false), 350);
+    return () => window.clearTimeout(timer);
+  }, [feedback]);
 
   const ownedEntries: { owned: OwnedItem; item: Item }[] = player.items.flatMap((owned) => {
     const item = items.find((i) => i.id === owned.itemId);
@@ -133,10 +162,24 @@ export function Shop() {
       <div className="mx-auto mt-5 max-w-4xl space-y-4 px-4 sm:px-8">
         {/* 所持金バッジ */}
         <div className="flex justify-end">
-          <div className="relative flex items-center gap-1.5 border-2 border-[#ffd54a]/80 bg-[#150d07] px-3 py-1 text-sm shadow-[3px_3px_0_rgba(0,0,0,0.45)]">
+          <div
+            className={`relative flex items-center gap-1.5 border-2 bg-[#150d07] px-3 py-1 text-sm shadow-[3px_3px_0_rgba(0,0,0,0.45)] transition-transform ${
+              goldPulse ? "scale-110 border-[#ffd54a]" : "scale-100 border-[#ffd54a]/80"
+            }`}
+          >
             <Rivets />
             <GoldCoin />
-            <span className="text-[#ffd54a]">{player.gold}G</span>
+            <span
+              className={
+                goldPulse
+                  ? feedback?.kind === "sell"
+                    ? "text-[#7cd67c]"
+                    : "text-[#ff8a5c]"
+                  : "text-[#ffd54a]"
+              }
+            >
+              {player.gold}G
+            </span>
           </div>
         </div>
 
@@ -187,6 +230,7 @@ export function Shop() {
                     disabled={busy || item.stock <= 0}
                     actionLabel="かう"
                     onAction={() => buy(item.id)}
+                    feedback={feedback?.itemId === item.id ? feedback : null}
                   />
                 ))}
               </div>
@@ -208,6 +252,7 @@ export function Shop() {
                     disabled={busy}
                     actionLabel="うる"
                     onAction={() => sell(owned.itemId)}
+                    feedback={feedback?.itemId === owned.itemId ? feedback : null}
                   />
                 ))}
               </div>
