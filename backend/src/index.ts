@@ -18,7 +18,13 @@ const player = {
   items: [] as { itemId: number; quantity: number }[],
 }
 
-app.use('/api/*', cors())
+// 今回のフロントエンド（Viteの開発サーバー）だけを許可する
+app.use(
+  '/api/*',
+  cors({
+    origin: 'http://localhost:5173',
+  })
+)
 
 // 所持金と所持アイテムを返すAPI
 app.get('/api/player', (c) => {
