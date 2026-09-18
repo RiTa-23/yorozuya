@@ -1,7 +1,7 @@
-import { Hono } from 'hono'
+import { OpenAPIHono, z, createRoute } from '@hono/zod-openapi'
 import { cors } from 'hono/cors'
 
-const app = new Hono()
+const app = new OpenAPIHono()
 
 // よろず屋の商品データ（第3回でデータベースに置き換えます）
 const items = [
