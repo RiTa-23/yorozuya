@@ -2,5 +2,13 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "backend",
   "main": "src/index.ts",
-  "compatibility_date": "2026-10-01"
+  "compatibility_date": "2026-10-01",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "yorozuya-db",
+      "database_id": "local-yorozuya-db",
+      "migrations_dir": "drizzle/migrations"
+    }
+  ]
 }

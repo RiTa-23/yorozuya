@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import { items } from '../data'
+import type { Bindings } from '../types' // 追加
 
-// 商品棚のAPI（第1回のコードをそのまま移動）
-export const itemsApp = new OpenAPIHono()
+// new OpenAPIHono() を、次のように書き換える
+export const itemsApp = new OpenAPIHono<{ Bindings: Bindings }>()
   // 商品一覧を返す
   .get('/api/items', (c) => {
     return c.json(items)

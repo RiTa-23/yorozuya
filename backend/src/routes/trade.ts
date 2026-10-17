@@ -1,6 +1,7 @@
 import { OpenAPIHono, createRoute } from '@hono/zod-openapi'
 import { items, player } from '../data'
 import { purchaseBodySchema, sellBodySchema, playerSchema, errorSchema } from '../schemas'
+import type { Bindings } from '../types' // 追加
 
 // 「POST /api/purchase はこういうAPIだ」という定義
 const purchaseRoute = createRoute({
@@ -49,7 +50,7 @@ const sellRoute = createRoute({
 })
 
 // 冒険者の所持金・所持品と、売り買いのAPI
-export const tradeApp = new OpenAPIHono()
+export const tradeApp = new OpenAPIHono<{ Bindings: Bindings }>()
   // アイテムを購入する
   .openapi(purchaseRoute, (c) => {
     // ここに来た時点でバリデーション済み。型も付いている
