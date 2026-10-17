@@ -3,6 +3,7 @@ dist
 dist-ssr
 *.local
 .DS_Store
+.wrangler
 
 # フロント動作確認用の検証バックエンド（配布対象の backend/ とは別物）
 _dev-backend/
