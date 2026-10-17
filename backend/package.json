@@ -2,16 +2,18 @@
   "name": "backend",
   "scripts": {
     "dev": "wrangler dev --port 3000",
-    "deploy" : "wrangler deploy"
+    "deploy": "wrangler deploy"
   },
   "dependencies": {
     "@hono/swagger-ui": "^0.6.1",
     "@hono/zod-openapi": "^1.6.3",
+    "drizzle-orm": "^0.45.4",
     "hono": "^4.13.3",
     "zod": "^4.6.5"
   },
   "devDependencies": {
     "@types/bun": "latest",
+    "drizzle-kit": "^0.31.11",
     "wrangler": "^4.151.1"
   }
 }
